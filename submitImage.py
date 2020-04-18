@@ -198,9 +198,9 @@ for shadow{
                     <div>
                	        <select id="Gender" name="Gender" style="" required>
                    		    <option style="color: "rgb(155, 152, 152);">---Select Gender---</option>
-                   		    <option value="M">Male</option>
-                   		    <option value="F">Female</option>
-                   		    <option value="O">Other</option>
+                   		    <option value="Male">Male</option>
+                   		    <option value="Female">Female</option>
+                   		    <option value="Other">Other</option>
                	        </select>
                     </div>
                     <input type="text" placeholder="Date" onfocus="(this.type='date')" required>
@@ -311,6 +311,7 @@ for shadow{
                 'patient_age':patient_age ,
                 'patient_gender':patient_gender,
                 'patient_date':patient_date,
+                'patient_doc': patient_doctor,
                 'user_id':user_id
             }))
         }
