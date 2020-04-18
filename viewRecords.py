@@ -15,6 +15,7 @@ def main(params):
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="crossorigin="anonymous"></script>
     <style type="text/css">
       .navbar{
         min-height: 76px !important;
@@ -71,11 +72,11 @@ def main(params):
             <div class="collaspe navbar-collapse float-right" id="navbarNavAltMarkup">
                 <div class="navbar-nav ml-auto" style="margin-left: 4vw;">
                 <!-- <a class="nav-item nav-link" style="" href="#">Virus Detector</a> -->
-                <a class="nav-item nav-link" style="color:#15386a; font-weight: bold;padding-right: 25px;padding-left: 25px;" href="ic_buttons.html">Home</a>
-                <a class="nav-item nav-link" style="color:#15386a; font-weight: bold;padding-right: 25px;padding-left: 25px " href="records.html">Records</a>
+                <a class="nav-item nav-link" style="color:#15386a; font-weight: bold;padding-right: 25px;padding-left: 25px;" href="https://eu-gb.functions.cloud.ibm.com/api/v1/web/vmk0888%40gmail.com_dev/default/submitImage2">Home</a>
+                <a class="nav-item nav-link" style="color:#15386a; font-weight: bold;padding-right: 25px;padding-left: 25px " href="#">Records</a>
                <!-- <a class="nav-item nav-link" style="color:#15386a; font-weight: bold;" href="members.php">Membership</a> -->
                 
-                <a class="nav-item nav-link" style="color:#15386a; font-weight: bold;padding-right: 25px;padding-left: 25px;" href="index.html" onclick="preventBack()">Logout</a>
+                <a class="nav-item nav-link" style="color:#15386a; font-weight: bold;padding-right: 25px;padding-left: 25px;" href="https://eu-gb.functions.cloud.ibm.com/api/v1/web/vmk0888%40gmail.com_dev/default/loginPage2" onclick="preventBack()">Logout</a>
                 </div>
             </div>
         </nav>
@@ -136,6 +137,9 @@ def main(params):
                       </th>
                       <th class="th-sm">diagnosis
                       </th>
+                      <th class="th-sm" colspan = 2>view Images
+                      </th>
+                      
                     </tr>
                   </thead>
                   <tbody id = 'tableBody'>
@@ -180,7 +184,7 @@ def main(params):
 
 	        let row = table.insertRow(-1)
 	        let cells = []
-		        for(let j = 0 ; j < 6 ; j++){
+		        for(let j = 0 ; j <= 7 ; j++){
 		        	cells.push(row.insertCell(j))
 		        }
 	        cells[0].innerHTML = records[i]['inf_image_id']
@@ -189,6 +193,39 @@ def main(params):
 	        cells[3].innerHTML = records[i]['patient_age']
 	        cells[4].innerHTML = records[i]['patient_date']
 	        cells[5].innerHTML = records[i]['inf_diagnosis']
+          let cosImageId = records[i]['cos_image_id']
+
+          let input_link = document.createElement("span");
+          let output_link = document.createElement("span");
+
+          input_link_id = "in/"+cosImageId
+          output_link_id = "out/"+cosImageId
+
+          input_link.id = input_link_id
+          output_link.id = output_link_id
+          input_text = document.createTextNode('view input');
+          output_text = document.createTextNode('view output');
+
+          input_link.style.margin = "0px 10px 10px 0px"
+          output_link.style.margin = "0px 10px 10px 0px"
+          input_link.style.cursor = "pointer"
+          output_link.style.cursor = "pointer"
+
+          input_link.style.color = "red"
+          output_link.style.color = "red"
+
+          input_link.appendChild(input_text);
+          output_link.appendChild(output_text)
+          input_link.addEventListener("click" , sendImageReq)
+          output_link.addEventListener("click" , sendImageReq)
+
+
+
+
+          //link.style.display = 'inline-block'
+          
+          cells[6].appendChild(input_link)
+          cells[7].appendChild(output_link)
 
         }
         
@@ -201,28 +238,86 @@ def main(params):
     xmlhttp.setRequestHeader("content-type","application/json")
     xmlhttp.send(JSON.stringify({'user_id':user_id , 'passwd':134}))
   }
+
+  let sendImageReq = function(){
+    console.log('sneding image req')
+    let elementId = this.id
+    let type = elementId.split('/')[0]
+    let imageId =elementId.split('/')[1]
+    console.log(imageId)
+    xmlhttp = new XMLHttpRequest()
+    xmlhttp.onreadystatechange=function(){
+      if(this.status == 200 && this.readyState ==4){
+        let response = JSON.parse(this.responseText)
+        console.log(response)
+        let imgString = "data:image/png;base64,"+response['body']
+        let image = new Image()
+        image.src = imgString;
+
+        let w = window.open('about:blank');
+        setTimeout(function(){
+          
+        w.document.write(image.outerHTML);
+        }, 0);
+      }
+    }
+    xmlhttp.open('POST','https://eu-gb.functions.cloud.ibm.com/api/v1/web/vmk0888%40gmail.com_dev/default/getCosImages.json')
+    xmlhttp.setRequestHeader("content-type","application/json")
+    xmlhttp.send(JSON.stringify({
+      'item':imageId,
+      'type':type
+    }))
+
+
+  }
  
 
 
 </script>
-
-
-
-
-
-
-
-
-
-
-<script
-	src="https://code.jquery.com/jquery-3.4.1.min.js"
-	integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-	crossorigin="anonymous"></script>
 <script type="text/javascript">
         function preventBack() { window.history.forward(); }
         setTimeout("preventBack()", 0);
         window.onunload = function () { null };
+</script>
+<script>
+// $(document).ready(function () {
+// $('#dtBasicExample').DataTable({
+// "scrollX": "100%"
+// });
+// $('.dataTables_length').addClass('bs-select');
+// });
+$(document).ready(function(){
+
+  // Search all columns
+  $('#SearchButton').keyup(function(){
+    // Search Text
+    var search = $(this).val();
+
+    // Hide all table tbody rows
+    $('table tbody tr').hide();
+
+    // Count total search result
+    var len = $('table tbody tr:not(.notfound) td:contains("'+search+'")').length;
+
+    if(len > 0){
+      // Searching text in columns and show match row
+      $('table tbody tr:not(.notfound) td:contains("'+search+'")').each(function(){
+        $(this).closest('tr').show();
+      });
+    }else{
+      $('.notfound').show();
+    }
+
+  });
+
+  });
+
+// Case-insensitive searching (Note - remove the below script for Case sensitive search )
+$.expr[":"].contains = $.expr.createPseudo(function(arg) {
+   return function( elem ) {
+     return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+   };
+});
 </script>
 
 </body>
